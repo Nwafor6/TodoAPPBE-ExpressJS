@@ -136,7 +136,7 @@ const config={
     // secure:false,
     auth:{
         user:"nwaforglory680@gmail.com",
-        password:"yaykjfrpacexokkk"
+        password:""
     },
 }
 
