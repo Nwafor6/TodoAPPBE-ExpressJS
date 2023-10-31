@@ -136,14 +136,3 @@ Make sure you have Node.js and MongoDB installed on your system.
 - [cors](https://www.npmjs.com/package/cors) - Cross-origin resource sharing middleware
 - [multer](https://www.npmjs.com/package/multer) - Middleware for handling `multipart/form-data`
 
-## Contributing
-
-Feel free to open issues and pull requests. Contributions are welcome!
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-Feel free to customize this README according to your project's specific features and functionalities. Let me know if you need further assistance!
