@@ -1,4 +1,4 @@
-const Todo = require("../models/TodoModels")
+const Todo = require("../Models/TodoModels")
 const {createSecretToken, decodSecretToken}=require("../util/SecretToken")
 const addTodo= async (req, res, next)=>{
     try{
