@@ -2,6 +2,7 @@ const User= require ("../Models/UserModel")
 const {createSecretToken, decodSecretToken}=require("../util/SecretToken")
 const bcrypt= require("bcrypt");
 const nodemailer= require("nodemailer")
+const cloudinary = require("../util/cloudinary");
 
 const signUp= async (req, res, next)=>{
     try{
@@ -100,13 +101,11 @@ const UpdateProfile = async (req, res)=>{
 }
 const UpdateProfileImg = async (req, res)=>{
     try{
-        const {file, book} = req.body;
-        console.log(book, "Heloo")
+        const {file} = req.body;
         const id= req.params.id
         const user= await User.findOne({_id:id});
         // confirm the token id to the user id
         const token = req.header('Authorization');
-        console.log(token, "tokne")
         if (!token) {
             return res.Status(401).json({detail:"Token not present"}); 
         }
@@ -117,10 +116,10 @@ const UpdateProfileImg = async (req, res)=>{
         if (!user){
             return res.status(404).json({detail:"Incorrect emails"})
         }
-        console.log(req.file, "Filesss")
-        const profileImagePath =  '/uploads/' + req.file.filename;
+        const result = await cloudinary.uploader.upload(req.file.path);
+        // const profileImagePath =  '/uploads/' + req.file.filename;
         const updatedUser= await User.findOneAndUpdate({_id:id}, {$set:{
-            profileImage:profileImagePath
+            profileImage:result.secure_url
         }}, {new:true})
         return res.status(200).json(updatedUser);
     }catch(error){
