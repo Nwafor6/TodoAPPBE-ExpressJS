@@ -9,7 +9,7 @@ const signUp= async (req, res, next)=>{
         const{email,password, username,createdAt}=req.body;
         const existingUser= await User.findOne({email})
         if (existingUser){
-            return  res.status(400).json({message: "user already exist."})
+            return  res.status(400).json({message: "User with this email already exist."})
         }
         const user= await User.create({email, password, username, createdAt});
         console.log(user._id, "user._id")
@@ -45,7 +45,7 @@ const Login= async (req, res, next) =>{
         }
         const auth = await bcrypt.compare(password.toString(), user.password.toString());
         if (!auth){
-            return res.status(400).json({message:"Incorrect password "})
+            return res.status(400).json({message:"Incorrect password or email"})
         }
         const token =createSecretToken(user._id);
         res.cookie('token', token, {

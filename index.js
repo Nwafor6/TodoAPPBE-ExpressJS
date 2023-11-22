@@ -24,7 +24,7 @@ app.listen(PORT, () => {
 app.use(
     cors(
         {
-        origin:["http://localhost:5173","https://mytaskz.netlify.app"],
+        origin: '*',
         methods:['GET',"POST","PUT","DELETE"],
         credentials:true,
     }
