@@ -83,7 +83,7 @@ const UpdateProfile = async (req, res)=>{
             return res.status(403).json({detail:"Unauthorized: You can only update your own profile." })
         }
         if (!user){
-            return res.status(404).json({detail:"Incorrect emails"})
+            return res.status(404).json({detail:"Incorrect email"})
         }
         const auth = await bcrypt.compare(password.toString(), user.password.toString());
         if (!auth){

@@ -5,6 +5,10 @@ const TodoSchema=new mongoose.Schema({
         type:String,
         required:[true, "title of your task is reqiured"]
     },
+    description: {
+        type: String,
+        required:[true, "description of your task is reqiured"]
+    },
     completed:{
         type:Boolean,
         default:false

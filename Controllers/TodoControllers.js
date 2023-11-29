@@ -2,13 +2,14 @@ const Todo = require("../Models/TodoModels")
 const {createSecretToken, decodSecretToken}=require("../util/SecretToken")
 const addTodo= async (req, res, next)=>{
     try{
-        const {title}= req.body;
+        const {title, description}= req.body;
         const token = req.header('Authorization');
-        console.log(token, title, "Heloo")
+        console.log(token, title, description, "Heloo")
         if (!token) return res.Status(401).json({detail:"Token not present"}); 
         const user_id=decodSecretToken(token)
         const todo = await Todo.create({
             title,
+            description,
             user: user_id, // Set the user ID in the 'user' field of the Todo object
         });
         res
@@ -48,7 +49,7 @@ const GetTodos= async (req, res, next) =>{
 }
 const UpdateTodo = async (req, res, next)=>{
     try{
-        const {completed}= req.body;
+        const {title, description}= req.body;
         const id =req.params.id;
         const token = req.header('Authorization');
         if (!token) return res.Status(401).json({detail:"Token not present"}); 
@@ -57,7 +58,7 @@ const UpdateTodo = async (req, res, next)=>{
             res.status(400).json({detail:user_id.detail, success: false});
             return;
         }
-        const todo= await Todo.findOneAndUpdate({_id:id, user:user_id}, {$set:{completed:completed}}, {new:true})
+        const todo= await Todo.findOneAndUpdate({_id:id, user:user_id}, {$set:{title:title, description:description}}, {new:true})
         res.status(200).json({todo, detail:"Updated"})
         return;
     }catch (error){
@@ -88,6 +89,7 @@ const DeleteTodo = async (req, res, next)=>{
         return
     }
 }
+
 const CompletedTodos= async (req, res)=>{
     try{
         const token = req.header('Authorization');
@@ -102,12 +104,27 @@ const CompletedTodos= async (req, res)=>{
     }catch(error){
         res.status(400).json({detail:error.message, success:false})
     }
+    
+}
 
+const getASingleTodo = async (req, res) => {
+    const { id } = req.params
+    console.log(id)
+    try {
+        const token = req.header('Authorization');
+        if (!token) return res.Status(401).json({detail:"Token not present"}); 
+        const todo = await Todo.findOne({_id:id})
+        return res.status(200).json(todo)
+    } catch (error) {
+        res.status(500).json({detail:error.message, success:false})
+        
+    }
 }
 
 module.exports={
     addTodo,
     GetTodos,
+    getASingleTodo,
     UpdateTodo,
     DeleteTodo,
     CompletedTodos
