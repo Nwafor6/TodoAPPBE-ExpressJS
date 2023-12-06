@@ -48,7 +48,7 @@ Make sure you have Node.js and MongoDB installed on your system.
 
 ## API Endpoints
 
-- **POST /sign**
+- **POST /signup**
 
   Register a new user.
 
@@ -92,6 +92,9 @@ Make sure you have Node.js and MongoDB installed on your system.
 
   Uodate profile image.
 
+- **GET /**
+
+  Get all todos for the un-authenticated user.
  
 - **GET /tasks**
 
