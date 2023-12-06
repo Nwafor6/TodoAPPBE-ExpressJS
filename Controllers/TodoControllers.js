@@ -120,13 +120,6 @@ const getASingleTodo = async (req, res) => {
 
 const getAllTodos = async (req, res) => {
   try {
-    const token = req.header("Authorization");
-    if (!token) return res.Status(401).json({ detail: "Token not present" });
-    const user_id = decodSecretToken(token);
-    if (user_id.failed) {
-      res.status(400).json({ detail: user_id.detail, success: false });
-      return;
-    }
     const allTodos = await Todo.find().sort({ createdAt: -1 });
     res.status(200).json(allTodos);
   } catch (error) {
