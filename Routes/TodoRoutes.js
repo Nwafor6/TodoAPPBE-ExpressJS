@@ -1,8 +1,9 @@
 const { addTodo, GetTodos, UpdateTodo, DeleteTodo, CompletedTodos, getASingleTodo, getAllTodos }=require("../Controllers/TodoControllers")
 const router = require("express").Router();
 
+
 router.post('/add-todo', addTodo)
-router.get('/', getAllTodos)
+router.get('/todos', getAllTodos)
 router.get("/tasks", GetTodos)
 router.get("/tasks/:id", getASingleTodo)
 router.put("/tasks/:id", UpdateTodo)

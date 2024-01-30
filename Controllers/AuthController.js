@@ -3,38 +3,38 @@ const {createSecretToken, decodSecretToken}=require("../util/SecretToken")
 const bcrypt= require("bcrypt");
 const nodemailer= require("nodemailer")
 const cloudinary = require("../util/cloudinary");
+const ejs = require('ejs');
+// const mailTemplate= require("../Templates/mail.ejs")
 
-const signUp= async (req, res, next)=>{
-    try{
-        const{email,password, username,createdAt}=req.body;
-        const existingUser= await User.findOne({email})
-        const existingUserName = await User.findOne({username})
-        if (existingUserName){
-            return  res.status(400).json({message: "User with this username already exist."})
+
+const signUp = async (req, res, next) => {
+    try {
+        const { email, password, username, createdAt } = req.body;
+        const existingUser = await User.findOne({ email });
+        const existingUserName = await User.findOne({ username });
+
+        if (existingUserName) {
+            return res.status(400).json({ message: "User with this username already exists.", success: false });
         }
-        if (existingUser){
-            return  res.status(400).json({message: "User with this email already exist."})
+
+        if (existingUser) {
+            return res.status(400).json({ message: "User with this email already exists.", success: false });
         }
-        const user= await User.create({email, password, username, createdAt});
-        console.log(user._id, "user._id")
-        const token =createSecretToken(user._id);
-        console.log(token, "Hello")
-        res.cookie('token', token, {
-            withCredentails:true,
-            httpsOnly:false,
+
+        const user = await User.create({ email, password, username, createdAt });
+        const token = createSecretToken(user._id);
+
+        res.status(201).json({ message: "Registration successful", token, success: true, user }).cookie('token', token, {
+            withCredentials: true,
+            httpOnly: false,
             maxAge: 24 * 60 * 60 * 1000,
         });
-        res
-        .status(201)
-        .json({message:"Registration successful",token:token, success:true, user})
-        next();
-    }catch (error){
-        res
-        .status(400)
-        .json({message:error, success:false})
-        console.log(error)
+        return;
+    } catch (error) {
+        res.status(400).json({ message: error.message, success: false });
     }
-}
+};
+
 
 const Login= async (req, res, next) =>{
     try{
@@ -138,8 +138,8 @@ const config={
     // port:587,
     // secure:false,
     auth:{
-        user:"nwaforglory680@gmail.com",
-        password:""
+        user:process.env.username,
+        pass:process.env.pass
     },
 }
 
@@ -148,9 +148,13 @@ const SendMail=async (req, res, next) =>{
         "from":"nwaforglory680@gmail.com",
         "to":"nwaforglory6@gmail.com",
         "subject":"Mail with NodeJS",
-        "text":"Hello i am testing mailing"
+        // "text":"Hello i am testing mailing"
     }
     try {
+        const template = await ejs.renderFile('./Templates/mail.ejs', { username:"glory" });
+
+        // Set the HTML content of the email
+        data.html = template;
         const transporter = nodemailer.createTransport(config);
         const info = await transporter.sendMail(data);
         console.log("Email sent: " + info.response);
@@ -159,6 +163,33 @@ const SendMail=async (req, res, next) =>{
         console.log(error);
         res.status(500).json({ detail: 'Internal Server Error' });
     }
+    // Code for sending email
+    // const transporter = nodemailer.createTransport({
+    //     service: 'gmail',
+    //     auth: {
+    //         user: process.env.username,
+    //         pass: process.env.pass
+    //     }
+    // });
+
+    // const mailOptions = {
+    //     from: "nwaforglory680@gmail.com",
+    //     to: "nwaforglory6@gmail.com",
+    //     subject: 'Sending Email From Class Monitor App',
+    //     html: `Thank you for registering with Technobs Digital Solutions via the class monitor app.<br />
+    //     Your student id is <span style:'font-weight:bold'></span>
+    //     `,
+    // };
+
+//     transporter.sendMail(mailOptions, (error, info)=>{
+//         if (error) {
+//         console.log(error + "Error here");
+//         } else {
+//         console.log('Email sent: ' + info.response);
+//         console.log(info)
+//         }
+//     });
+//     return res.status(200).json({detail: "mail sent"});
 }
 
 module.exports={
